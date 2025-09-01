@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Zap, Trophy, Users, MessageCircle, Rocket, Star } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Zap, Trophy, Users, MessageCircle, Rocket, Star, Play, CheckCircle, Award, Crown } from 'lucide-react';
 import { ChatInterface } from '@/components/ChatInterface';
 import { ProjectDashboard } from '@/components/ProjectDashboard';
 import { Navigation } from '@/components/Navigation';
@@ -11,6 +12,7 @@ import { Avatar } from '@/components/Avatar';
 import { Leaderboard } from '@/components/Leaderboard';
 import { AuthFlow } from '@/components/AuthFlow';
 import { TeamDashboard } from '@/components/TeamDashboard';
+import { HowItWorksModal } from '@/components/HowItWorksModal';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<'landing' | 'chat' | 'dashboard' | 'leaderboard' | 'avatar' | 'teams'>('landing');
@@ -18,6 +20,7 @@ const Index = () => {
   const [userLevel, setUserLevel] = useState(3);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   const handleStartProject = () => {
     if (!isAuthenticated) {
@@ -44,6 +47,16 @@ const Index = () => {
     setCurrentView('chat');
   };
 
+  const handleLogout = () => {
+    // Reset all user state
+    setIsAuthenticated(false);
+    setUserXP(250);
+    setUserLevel(3);
+    setCurrentView('landing');
+    // In a real app, this would also clear localStorage/sessionStorage
+    localStorage.clear();
+  };
+
   if (showAuth && !isAuthenticated) {
     return <AuthFlow onComplete={handleAuthComplete} onBack={() => setShowAuth(false)} />;
   }
@@ -51,7 +64,11 @@ const Index = () => {
   if (currentView !== 'landing' && isAuthenticated) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation currentView={currentView} onViewChange={setCurrentView} />
+        <Navigation 
+          currentView={currentView} 
+          onViewChange={setCurrentView} 
+          onLogout={handleLogout}
+        />
         
         <div className="flex">
           <main className="flex-1 p-6">
@@ -118,16 +135,18 @@ const Index = () => {
               
               <Button 
                 variant="outline" 
+                onClick={() => setShowHowItWorks(true)}
                 className="px-8 py-6 text-lg border-purple-500/30 hover:border-purple-500/60 hover:bg-purple-500/10"
               >
-                <MessageCircle className="w-5 h-5 mr-2" />
-                See How It Works
+                <Play className="w-5 h-5 mr-2" />
+                How It Works
               </Button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Features Section */}
       <div className="container mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -171,6 +190,7 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Stats Section with Egyptian flavor */}
       <div className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 py-16">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -183,24 +203,25 @@ const Index = () => {
               <div className="text-muted-foreground">Tasks Completed</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-gaming-purple mb-2">89</div>
-              <div className="text-muted-foreground">Universities</div>
+              <div className="text-3xl md:text-4xl font-bold text-gaming-purple mb-2">25</div>
+              <div className="text-muted-foreground">Egyptian Universities</div>
             </div>
             <div>
-              <div className="text-3xl md:text-4xl font-bold text-gaming-green mb-2">156</div>
+              <div className="text-3xl md:text-4xl font-bold text-gaming-green mb-2">89</div>
               <div className="text-muted-foreground">Launched Startups</div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* CTA Section */}
       <div className="container mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Level Up Your Startup?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of Gen Z entrepreneurs who are building the future, one XP at a time.
+            Join thousands of Egyptian entrepreneurs who are building the future, one XP at a time.
           </p>
           
           <Button 
@@ -212,6 +233,13 @@ const Index = () => {
           </Button>
         </div>
       </div>
+
+      {/* How It Works Modal */}
+      <HowItWorksModal 
+        open={showHowItWorks} 
+        onOpenChange={setShowHowItWorks}
+        onStartNow={handleStartProject}
+      />
     </div>
   );
 };

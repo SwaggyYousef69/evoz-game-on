@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Users, Plus, Crown, Star, Zap, Trophy, Copy, UserPlus } from 'lucide-react';
 import { UniversityLeagueModal } from '@/components/UniversityLeagueModal';
+import { useToast } from '@/hooks/use-toast';
 
 type TeamMember = {
   id: string;
@@ -28,17 +29,18 @@ type Team = {
 };
 
 export function TeamDashboard() {
+  const { toast } = useToast();
   const [currentTeam, setCurrentTeam] = useState<Team | null>({
     id: '1',
-    name: 'Stanford Innovators',
-    inviteCode: 'STAN2024',
-    university: 'Stanford University',
+    name: 'Pyramids Hustlers',
+    inviteCode: 'PYRA2024',
+    university: 'Cairo University',
     totalXP: 1850,
     members: [
-      { id: '1', name: 'Alex Chen', level: 8, xp: 750, role: 'Team Lead', avatar: '👨‍💻', isOnline: true },
-      { id: '2', name: 'Sarah Kim', level: 6, xp: 550, role: 'Developer', avatar: '👩‍💼', isOnline: true },
-      { id: '3', name: 'Mike Johnson', level: 5, xp: 450, role: 'Designer', avatar: '👨‍🎨', isOnline: false },
-      { id: '4', name: 'Emma Davis', level: 3, xp: 250, role: 'Marketing', avatar: '👩‍🚀', isOnline: true },
+      { id: '1', name: 'Ahmed Hassan', level: 8, xp: 750, role: 'Team Lead', avatar: '👨‍💻', isOnline: true },
+      { id: '2', name: 'Sara Mohamed', level: 6, xp: 550, role: 'Developer', avatar: '👩‍💼', isOnline: true },
+      { id: '3', name: 'Youssef Ali', level: 5, xp: 450, role: 'Designer', avatar: '👨‍🎨', isOnline: false },
+      { id: '4', name: 'Nour Mahmoud', level: 3, xp: 250, role: 'Marketing', avatar: '👩‍🚀', isOnline: true },
     ]
   });
 
@@ -51,7 +53,7 @@ export function TeamDashboard() {
   const handleCreateTeam = () => {
     if (!newTeamName.trim()) return;
     
-    // Mock team creation
+    // Mock team creation with Egyptian flavor
     const newTeam: Team = {
       id: Date.now().toString(),
       name: newTeamName,
@@ -65,37 +67,81 @@ export function TeamDashboard() {
     setCurrentTeam(newTeam);
     setShowCreateTeam(false);
     setNewTeamName('');
+    
+    toast({
+      title: "Team Created! 🎉",
+      description: `Welcome to ${newTeamName}! Share your invite code to grow your team.`,
+    });
   };
 
   const handleJoinTeam = () => {
     if (!joinCode.trim()) return;
     
-    // Mock team joining
-    const mockTeam: Team = {
-      id: '2',
-      name: 'MIT Makers',
-      inviteCode: joinCode,
-      university: 'MIT',
-      totalXP: 2340,
-      members: [
-        { id: '1', name: 'John Smith', level: 12, xp: 1200, role: 'Team Lead', avatar: '👨‍💻', isOnline: true },
-        { id: '2', name: 'Lisa Wang', level: 9, xp: 890, role: 'CTO', avatar: '👩‍💻', isOnline: false },
-        { id: 'me', name: 'You', level: 5, xp: 450, role: 'Member', avatar: '👤', isOnline: true },
-      ]
-    };
+    // Mock team joining with Egyptian teams
+    const egyptianTeams = [
+      {
+        id: '2',
+        name: 'Nile Innovators',
+        inviteCode: joinCode,
+        university: 'Ain Shams University',
+        totalXP: 2340,
+        members: [
+          { id: '1', name: 'Omar Khaled', level: 12, xp: 1200, role: 'Team Lead', avatar: '👨‍💻', isOnline: true },
+          { id: '2', name: 'Layla Farouk', level: 9, xp: 890, role: 'CTO', avatar: '👩‍💻', isOnline: false },
+          { id: 'me', name: 'You', level: 5, xp: 450, role: 'Member', avatar: '👤', isOnline: true },
+        ]
+      },
+      {
+        id: '3',
+        name: 'Cairo Tech Squad',
+        inviteCode: joinCode,
+        university: 'American University in Cairo',
+        totalXP: 1950,
+        members: [
+          { id: '1', name: 'Mariam Elsayed', level: 10, xp: 1000, role: 'Team Lead', avatar: '👩‍💼', isOnline: true },
+          { id: '2', name: 'Karim Mostafa', level: 7, xp: 700, role: 'Developer', avatar: '👨‍💻', isOnline: true },
+          { id: 'me', name: 'You', level: 5, xp: 450, role: 'Member', avatar: '👤', isOnline: true },
+        ]
+      }
+    ];
     
-    setCurrentTeam(mockTeam);
+    const randomTeam = egyptianTeams[Math.floor(Math.random() * egyptianTeams.length)];
+    setCurrentTeam(randomTeam);
     setShowJoinTeam(false);
     setJoinCode('');
+    
+    toast({
+      title: "Joined Team! 🎊",
+      description: `Welcome to ${randomTeam.name}! Start collaborating with your teammates.`,
+    });
   };
 
   const generateInviteCode = () => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
   };
 
-  const copyInviteCode = () => {
+  const copyInviteCode = async () => {
     if (currentTeam?.inviteCode) {
-      navigator.clipboard.writeText(currentTeam.inviteCode);
+      try {
+        await navigator.clipboard.writeText(currentTeam.inviteCode);
+        toast({
+          title: "Code Copied! 📋",
+          description: "Invite code has been copied to clipboard",
+        });
+      } catch (err) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = currentTeam.inviteCode;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        toast({
+          title: "Code Copied! 📋",
+          description: "Invite code has been copied to clipboard",
+        });
+      }
     }
   };
 
@@ -104,7 +150,7 @@ export function TeamDashboard() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Team Up & Build Together</h1>
-          <p className="text-muted-foreground">Join forces with other entrepreneurs to build amazing startups</p>
+          <p className="text-muted-foreground">Join forces with other Egyptian entrepreneurs to build amazing startups</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
@@ -127,7 +173,7 @@ export function TeamDashboard() {
                   <div>
                     <label className="text-sm font-medium mb-2 block">Team Name</label>
                     <Input
-                      placeholder="Enter team name"
+                      placeholder="e.g., Cairo Builders, Alexandria Innovators..."
                       value={newTeamName}
                       onChange={(e) => setNewTeamName(e.target.value)}
                     />
@@ -181,7 +227,7 @@ export function TeamDashboard() {
             variant="outline"
             className="border-gaming-gold/30 hover:bg-gaming-gold/10"
           >
-            🎓 Join University League
+            🎓 Join Egyptian University League
           </Button>
         </div>
 
@@ -215,13 +261,19 @@ export function TeamDashboard() {
           <Button
             onClick={copyInviteCode}
             variant="outline"
-            className="border-gaming-cyan/30 hover:bg-gaming-cyan/10"
+            className="border-gaming-cyan/30 hover:bg-gaming-cyan/10 hover:animate-pulse-gaming"
           >
             <Copy className="w-4 h-4 mr-2" />
             {currentTeam.inviteCode}
           </Button>
           <Button
-            onClick={() => setCurrentTeam(null)}
+            onClick={() => {
+              setCurrentTeam(null);
+              toast({
+                title: "Left Team",
+                description: "You have successfully left the team",
+              });
+            }}
             variant="outline"
             className="text-red-400 border-red-400/30 hover:bg-red-400/10"
           >
@@ -245,7 +297,7 @@ export function TeamDashboard() {
             <div className="text-3xl font-bold text-gaming-green mb-2">
               {Math.round(currentTeam.totalXP / currentTeam.members.length)}
             </div>
-            <div className="text-sm text-muted-foreground">Avg Level</div>
+            <div className="text-sm text-muted-foreground">Avg XP</div>
           </div>
           <div className="text-center">
             <div className="text-3xl font-bold text-gaming-cyan mb-2">

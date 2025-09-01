@@ -1,12 +1,12 @@
-
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, Circle, Clock, Zap, Target, Upload, MessageCircle, X, Send } from 'lucide-react';
+import { CheckCircle2, Circle, Clock, Zap, Target, Upload, MessageCircle, X, Send, RotateCcw } from 'lucide-react';
 import { TaskSubmissionModal } from '@/components/TaskSubmissionModal';
+import { useToast } from '@/hooks/use-toast';
 
 type Task = {
   id: string;
@@ -23,11 +23,12 @@ type ProjectDashboardProps = {
 };
 
 export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
+  const { toast } = useToast();
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: '1',
-      title: 'Define Target Audience',
-      description: 'Research and create detailed personas of your ideal customers',
+      title: 'Define Target Audience for Egyptian Market',
+      description: 'Research and create detailed personas of your ideal Egyptian customers',
       category: 'Market Research',
       status: 'todo',
       xpReward: 25,
@@ -35,8 +36,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     },
     {
       id: '2',
-      title: 'Competitor Analysis',
-      description: 'Analyze 5 direct competitors and identify market gaps',
+      title: 'Analyze Cairo E-commerce Competitors',
+      description: 'Study 5 direct competitors in the Egyptian market and identify gaps',
       category: 'Market Research',
       status: 'todo',
       xpReward: 40,
@@ -44,8 +45,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     },
     {
       id: '3',
-      title: 'Brand Name & Logo',
-      description: 'Create brand identity including name, logo, and color scheme',
+      title: 'Create Arabic Brand Identity',
+      description: 'Design brand identity including Arabic name, logo, and cultural elements',
       category: 'Brand Identity',
       status: 'in-progress',
       xpReward: 35,
@@ -53,8 +54,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     },
     {
       id: '4',
-      title: 'Business Model Canvas',
-      description: 'Complete a comprehensive business model canvas',
+      title: 'Egyptian Business Model Canvas',
+      description: 'Complete business model canvas adapted for the Egyptian market',
       category: 'Strategy',
       status: 'todo',
       xpReward: 50,
@@ -62,8 +63,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     },
     {
       id: '5',
-      title: 'Create Social Media Accounts',
-      description: 'Set up Instagram, TikTok, and Twitter profiles',
+      title: 'Setup Egyptian Social Media',
+      description: 'Create Facebook, Instagram, and TikTok profiles for Egyptian audience',
       category: 'Marketing',
       status: 'completed',
       xpReward: 20,
@@ -71,8 +72,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     },
     {
       id: '6',
-      title: 'Find Suppliers',
-      description: 'Research and contact potential manufacturers',
+      title: 'Find Local Egyptian Suppliers',
+      description: 'Research and contact potential manufacturers in Egypt',
       category: 'Operations',
       status: 'todo',
       xpReward: 45,
@@ -82,10 +83,11 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
 
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showSubmissionModal, setShowSubmissionModal] = useState(false);
+  const [showRedoConfirm, setShowRedoConfirm] = useState<string | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { id: '1', text: 'Hey! Need help with any tasks?', sender: 'ai', timestamp: Date.now() - 300000 },
-    { id: '2', text: 'I can help you break down complex tasks into smaller steps!', sender: 'ai', timestamp: Date.now() - 240000 }
+    { id: '1', text: 'مرحبا! هل تحتاج مساعدة في أي من المهام؟', sender: 'ai', timestamp: Date.now() - 300000 },
+    { id: '2', text: 'I can help you break down complex tasks for the Egyptian market!', sender: 'ai', timestamp: Date.now() - 240000 }
   ]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -113,6 +115,11 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
               }
             }, 2000);
           }
+
+          toast({
+            title: "Task Completed! 🎉",
+            description: `You earned ${task.xpReward} XP for completing "${task.title}"`,
+          });
         }
         
         return updatedTask;
@@ -125,6 +132,18 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     handleTaskStatusChange(taskId, 'completed');
     setShowSubmissionModal(false);
     setSelectedTask(null);
+  };
+
+  const handleRedoTask = (taskId: string) => {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+      handleTaskStatusChange(taskId, 'in-progress');
+      setShowRedoConfirm(null);
+      toast({
+        title: "Task Reset",
+        description: `"${task.title}" is now ready for resubmission`,
+      });
+    }
   };
 
   const handleSendMessage = () => {
@@ -140,11 +159,18 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     setChatMessages(prev => [...prev, userMessage]);
     setNewMessage('');
     
-    // Mock AI response
+    // Mock AI response with Egyptian context
     setTimeout(() => {
+      const responses = [
+        "Great question! For the Egyptian market, I'd recommend focusing on mobile-first solutions since smartphone usage is very high.",
+        "Consider local payment methods like Fawry and Vodafone Cash for Egyptian customers.",
+        "Remember to localize your content in Arabic and consider cultural preferences.",
+        "The Egyptian market loves social proof - customer testimonials work really well here!"
+      ];
+      
       const aiResponse = {
         id: (Date.now() + 1).toString(),
-        text: "Great question! Let me help you with that. For market research, I'd recommend starting with surveys and competitor analysis.",
+        text: responses[Math.floor(Math.random() * responses.length)],
         sender: 'ai' as const,
         timestamp: Date.now()
       };
@@ -299,7 +325,7 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
                         <button
                           onClick={() => {
                             if (task.status === 'completed') {
-                              handleTaskStatusChange(task.id, 'todo');
+                              return; // Don't allow status change via icon for completed tasks
                             } else if (task.status === 'in-progress') {
                               setSelectedTask(task);
                               setShowSubmissionModal(true);
@@ -334,32 +360,41 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
                       </div>
                     </div>
                     
-                    {task.status !== 'completed' && (
-                      <div className="flex gap-2">
-                        {task.status === 'todo' && (
-                          <Button 
-                            size="sm" 
-                            onClick={() => handleTaskStatusChange(task.id, 'in-progress')}
-                            className="btn-gaming"
-                          >
-                            Start Task
-                          </Button>
-                        )}
-                        {task.status === 'in-progress' && (
-                          <Button 
-                            size="sm" 
-                            onClick={() => {
-                              setSelectedTask(task);
-                              setShowSubmissionModal(true);
-                            }}
-                            className="btn-gaming"
-                          >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Submit Work
-                          </Button>
-                        )}
-                      </div>
-                    )}
+                    <div className="flex gap-2">
+                      {task.status === 'todo' && (
+                        <Button 
+                          size="sm" 
+                          onClick={() => handleTaskStatusChange(task.id, 'in-progress')}
+                          className="btn-gaming"
+                        >
+                          Start Task
+                        </Button>
+                      )}
+                      {task.status === 'in-progress' && (
+                        <Button 
+                          size="sm" 
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setShowSubmissionModal(true);
+                          }}
+                          className="btn-gaming"
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          Submit Work
+                        </Button>
+                      )}
+                      {task.status === 'completed' && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setShowRedoConfirm(task.id)}
+                          className="border-gaming-gold/30 text-gaming-gold hover:bg-gaming-gold/10"
+                        >
+                          <RotateCcw className="w-4 h-4 mr-2" />
+                          Redo Task
+                        </Button>
+                      )}
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -377,6 +412,32 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
           onSubmit={handleTaskSubmission}
         />
       )}
+
+      {/* Redo Confirmation Dialog */}
+      <Dialog open={!!showRedoConfirm} onOpenChange={() => setShowRedoConfirm(null)}>
+        <DialogContent className="gaming-card">
+          <DialogHeader>
+            <DialogTitle>Redo Task?</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-muted-foreground">
+              Are you sure you want to redo this task? Your previous submission will be cleared and you can submit new work.
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="outline" onClick={() => setShowRedoConfirm(null)}>
+                Cancel
+              </Button>
+              <Button 
+                onClick={() => showRedoConfirm && handleRedoTask(showRedoConfirm)}
+                className="btn-gaming"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Redo Task
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
