@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -21,6 +20,7 @@ const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [showHowItWorks, setShowHowItWorks] = useState(false);
+  const [showLevelUp, setShowLevelUp] = useState(false);
 
   const handleStartProject = () => {
     if (!isAuthenticated) {
@@ -36,6 +36,7 @@ const Index = () => {
       const newLevel = Math.floor(newXP / 100) + 1;
       if (newLevel > userLevel) {
         setUserLevel(newLevel);
+        setShowLevelUp(true);
       }
       return newXP;
     });
@@ -48,13 +49,24 @@ const Index = () => {
   };
 
   const handleLogout = () => {
-    // Reset all user state
+    // Clear all user state and localStorage
     setIsAuthenticated(false);
-    setUserXP(250);
-    setUserLevel(3);
+    setUserXP(0);
+    setUserLevel(1);
+    setShowLevelUp(false);
     setCurrentView('landing');
-    // In a real app, this would also clear localStorage/sessionStorage
-    localStorage.clear();
+    
+    // Clear localStorage
+    localStorage.removeItem('theme');
+    localStorage.removeItem('user-data');
+    localStorage.removeItem('tasks');
+    localStorage.removeItem('teams');
+    
+    console.log('User logged out, all state cleared');
+  };
+
+  const handleLevelUpComplete = () => {
+    setShowLevelUp(false);
   };
 
   if (showAuth && !isAuthenticated) {
@@ -63,7 +75,7 @@ const Index = () => {
 
   if (currentView !== 'landing' && isAuthenticated) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background transition-colors duration-300">
         <Navigation 
           currentView={currentView} 
           onViewChange={setCurrentView} 
@@ -86,7 +98,12 @@ const Index = () => {
               )}
               
               {currentView === 'avatar' && (
-                <Avatar level={userLevel} xp={userXP} />
+                <Avatar 
+                  level={userLevel} 
+                  xp={userXP} 
+                  showLevelUp={showLevelUp}
+                  onLevelUpComplete={handleLevelUpComplete}
+                />
               )}
               
               {currentView === 'leaderboard' && (

@@ -67,14 +67,12 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Gaming-specific colors
+				// Gaming-specific colors - consistent across themes
 				'gaming-purple': 'hsl(var(--gaming-purple))',
 				'gaming-cyan': 'hsl(var(--gaming-cyan))',
 				'gaming-gold': 'hsl(var(--gaming-gold))',
 				'gaming-green': 'hsl(var(--gaming-green))',
 				'gaming-red': 'hsl(var(--gaming-red))',
-				'xp-bar': 'hsl(var(--xp-bar))',
-				'level-gold': 'hsl(var(--level-gold))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

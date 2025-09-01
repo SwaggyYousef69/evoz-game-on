@@ -1,6 +1,7 @@
 
 import { Button } from '@/components/ui/button';
 import { MessageSquare, BarChart3, User, Trophy, Users, LogOut } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 type NavigationProps = {
   currentView: string;
@@ -48,14 +49,17 @@ export function Navigation({ currentView, onViewChange, onLogout }: NavigationPr
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            onClick={onLogout}
-            className="flex items-center gap-2 text-red-400 border-red-400/30 hover:bg-red-400/10 hover:border-red-400/60"
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Button
+              variant="outline"
+              onClick={onLogout}
+              className="flex items-center gap-2 text-red-400 border-red-400/30 hover:bg-red-400/10 hover:border-red-400/60"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
