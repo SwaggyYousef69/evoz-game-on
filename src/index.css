@@ -1,96 +1,57 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* EVOZ Gaming Design System - All colors, gradients, fonts, etc defined here */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
+    /* Gaming Color Palette */
+    --background: 220 27% 8%;           /* Dark gaming background */
+    --foreground: 210 40% 98%;          /* Light text */
+    
+    --card: 220 20% 12%;                /* Dark cards */
     --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
+    
+    --popover: 220 20% 12%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+    
+    --primary: 270 91% 65%;             /* Electric purple */
+    --primary-foreground: 210 40% 98%;
+    
+    --secondary: 195 100% 65%;          /* Cyber cyan */
+    --secondary-foreground: 220 27% 8%;
+    
+    --muted: 220 20% 15%;
+    --muted-foreground: 215 20% 65%;
+    
+    --accent: 195 100% 65%;             /* Neon cyan accent */
+    --accent-foreground: 220 27% 8%;
+    
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    --border: 220 20% 18%;
+    --input: 220 20% 18%;
+    --ring: 270 91% 65%;
+    
+    --radius: 0.75rem;
+    
+    /* Gaming-specific colors */
+    --gaming-purple: 270 91% 65%;
+    --gaming-cyan: 195 100% 65%;
+    --gaming-gold: 45 100% 60%;
+    --gaming-green: 142 76% 45%;
+    --gaming-red: 348 83% 60%;
+    
+    /* XP and level colors */
+    --xp-bar: 142 76% 45%;
+    --level-gold: 45 100% 60%;
+    
+    /* Chat bubble colors */
+    --user-bubble: 270 91% 65%;
+    --ai-bubble: 220 20% 15%;
   }
 }
 
@@ -98,8 +59,116 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-gaming;
+    background-image: 
+      radial-gradient(at 40% 20%, hsl(270 91% 65% / 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(195 100% 65% / 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(270 91% 65% / 0.05) 0px, transparent 50%);
+  }
+}
+
+/* Gaming Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* Gaming Components */
+@layer components {
+  /* Gaming buttons */
+  .btn-gaming {
+    @apply relative overflow-hidden rounded-xl font-semibold transition-all duration-300;
+    @apply bg-gradient-to-r from-purple-600 to-cyan-500;
+    @apply hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25;
+    @apply active:scale-95;
+  }
+  
+  .btn-gaming::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-purple-400 to-cyan-300 opacity-0 transition-opacity duration-300;
+  }
+  
+  .btn-gaming:hover::before {
+    @apply opacity-20;
+  }
+  
+  /* XP gain animation */
+  .xp-gain {
+    @apply animate-bounce text-gaming-gold font-bold;
+    animation: xpGain 1s ease-out forwards;
+  }
+  
+  /* Glowing effects */
+  .glow-purple {
+    @apply shadow-lg shadow-purple-500/20;
+    box-shadow: 0 0 20px hsl(270 91% 65% / 0.3);
+  }
+  
+  .glow-cyan {
+    @apply shadow-lg shadow-cyan-500/20;
+    box-shadow: 0 0 20px hsl(195 100% 65% / 0.3);
+  }
+  
+  /* Gaming cards */
+  .gaming-card {
+    @apply bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl;
+    @apply hover:border-purple-500/30 transition-all duration-300;
+  }
+  
+  /* Chat bubbles */
+  .chat-bubble-user {
+    @apply bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-2xl rounded-br-md;
+    @apply shadow-lg shadow-purple-500/20;
+  }
+  
+  .chat-bubble-ai {
+    @apply bg-muted border border-border rounded-2xl rounded-bl-md;
+    @apply shadow-lg shadow-black/10;
+  }
+}
+
+/* Gaming animations */
+@layer utilities {
+  @keyframes xpGain {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-20px) scale(1.2);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-40px) scale(1);
+      opacity: 0;
+    }
+  }
+  
+  @keyframes levelUp {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes pulse-gaming {
+    0%, 100% {
+      box-shadow: 0 0 20px hsl(270 91% 65% / 0.3);
+    }
+    50% {
+      box-shadow: 0 0 30px hsl(270 91% 65% / 0.6);
+    }
+  }
+  
+  .animate-level-up {
+    animation: levelUp 0.6s ease-out;
+  }
+  
+  .animate-pulse-gaming {
+    animation: pulse-gaming 2s infinite;
   }
 }

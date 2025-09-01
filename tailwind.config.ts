@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,6 +19,10 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'gaming': ['Space Grotesk', 'Inter', 'sans-serif'],
+				'sans': ['Inter', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -61,7 +66,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Gaming-specific colors
+				'gaming-purple': 'hsl(var(--gaming-purple))',
+				'gaming-cyan': 'hsl(var(--gaming-cyan))',
+				'gaming-gold': 'hsl(var(--gaming-gold))',
+				'gaming-green': 'hsl(var(--gaming-green))',
+				'gaming-red': 'hsl(var(--gaming-red))',
+				'xp-bar': 'hsl(var(--xp-bar))',
+				'level-gold': 'hsl(var(--level-gold))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
