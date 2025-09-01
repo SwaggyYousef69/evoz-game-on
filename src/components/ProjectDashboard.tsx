@@ -3,7 +3,10 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Circle, Clock, Zap, Target } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { CheckCircle2, Circle, Clock, Zap, Target, Upload, MessageCircle, X, Send } from 'lucide-react';
+import { TaskSubmissionModal } from '@/components/TaskSubmissionModal';
 
 type Task = {
   id: string;
@@ -77,12 +80,20 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
     }
   ]);
 
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [showSubmissionModal, setShowSubmissionModal] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { id: '1', text: 'Hey! Need help with any tasks?', sender: 'ai', timestamp: Date.now() - 300000 },
+    { id: '2', text: 'I can help you break down complex tasks into smaller steps!', sender: 'ai', timestamp: Date.now() - 240000 }
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+
   const handleTaskStatusChange = (taskId: string, newStatus: Task['status']) => {
     setTasks(prev => prev.map(task => {
       if (task.id === taskId) {
         const updatedTask = { ...task, status: newStatus };
         
-        // Award XP when task is completed
         if (newStatus === 'completed' && task.status !== 'completed') {
           onTaskComplete(task.xpReward);
           
@@ -91,7 +102,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
           if (element) {
             const xpGainElement = document.createElement('div');
             xpGainElement.textContent = `+${task.xpReward} XP`;
-            xpGainElement.className = 'xp-gain absolute top-0 right-0 text-gaming-gold font-bold z-10';
+            xpGainElement.className = 'xp-gain absolute top-0 right-0 text-gaming-gold font-bold z-10 animate-bounce';
+            xpGainElement.style.animation = 'bounce 0.5s ease-in-out';
             element.style.position = 'relative';
             element.appendChild(xpGainElement);
             
@@ -99,7 +111,7 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
               if (xpGainElement.parentNode) {
                 xpGainElement.parentNode.removeChild(xpGainElement);
               }
-            }, 1000);
+            }, 2000);
           }
         }
         
@@ -107,6 +119,37 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
       }
       return task;
     }));
+  };
+
+  const handleTaskSubmission = (taskId: string, submission: any) => {
+    handleTaskStatusChange(taskId, 'completed');
+    setShowSubmissionModal(false);
+    setSelectedTask(null);
+  };
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim()) return;
+    
+    const userMessage = {
+      id: Date.now().toString(),
+      text: newMessage,
+      sender: 'user' as const,
+      timestamp: Date.now()
+    };
+    
+    setChatMessages(prev => [...prev, userMessage]);
+    setNewMessage('');
+    
+    // Mock AI response
+    setTimeout(() => {
+      const aiResponse = {
+        id: (Date.now() + 1).toString(),
+        text: "Great question! Let me help you with that. For market research, I'd recommend starting with surveys and competitor analysis.",
+        sender: 'ai' as const,
+        timestamp: Date.now()
+      };
+      setChatMessages(prev => [...prev, aiResponse]);
+    }, 1000);
   };
 
   const getStatusIcon = (status: Task['status']) => {
@@ -147,7 +190,66 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
   const completionPercentage = (completedTasks / totalTasks) * 100;
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto relative">
+      {/* Chat Sidebar Toggle */}
+      <Button
+        onClick={() => setChatOpen(true)}
+        className="fixed bottom-6 right-6 z-40 btn-gaming rounded-full w-14 h-14 p-0"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </Button>
+
+      {/* Chat Sidebar */}
+      {chatOpen && (
+        <div className="fixed inset-y-0 right-0 w-80 bg-background border-l border-border z-50 flex flex-col animate-slide-in-right">
+          <div className="p-4 border-b border-border flex items-center justify-between">
+            <h3 className="font-semibold">AI Assistant</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setChatOpen(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
+          
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {chatMessages.map((message) => (
+              <div
+                key={message.id}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={`max-w-[80%] p-3 rounded-lg ${
+                    message.sender === 'user'
+                      ? 'bg-gaming-purple text-white'
+                      : 'bg-muted text-foreground'
+                  }`}
+                >
+                  <p className="text-sm">{message.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div className="p-4 border-t border-border">
+            <div className="flex gap-2">
+              <Textarea
+                placeholder="Ask about your tasks..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSendMessage())}
+                className="min-h-0 resize-none"
+                rows={1}
+              />
+              <Button onClick={handleSendMessage} size="sm" className="btn-gaming">
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Your Startup Dashboard</h1>
         
@@ -199,7 +301,8 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
                             if (task.status === 'completed') {
                               handleTaskStatusChange(task.id, 'todo');
                             } else if (task.status === 'in-progress') {
-                              handleTaskStatusChange(task.id, 'completed');
+                              setSelectedTask(task);
+                              setShowSubmissionModal(true);
                             } else {
                               handleTaskStatusChange(task.id, 'in-progress');
                             }
@@ -245,10 +348,14 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
                         {task.status === 'in-progress' && (
                           <Button 
                             size="sm" 
-                            onClick={() => handleTaskStatusChange(task.id, 'completed')}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setShowSubmissionModal(true);
+                            }}
                             className="btn-gaming"
                           >
-                            Mark Complete
+                            <Upload className="w-4 h-4 mr-2" />
+                            Submit Work
                           </Button>
                         )}
                       </div>
@@ -260,6 +367,16 @@ export function ProjectDashboard({ onTaskComplete }: ProjectDashboardProps) {
           );
         })}
       </div>
+
+      {/* Task Submission Modal */}
+      {selectedTask && (
+        <TaskSubmissionModal
+          open={showSubmissionModal}
+          onOpenChange={setShowSubmissionModal}
+          task={selectedTask}
+          onSubmit={handleTaskSubmission}
+        />
+      )}
     </div>
   );
 }

@@ -1,57 +1,42 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* EVOZ Gaming Design System - All colors, gradients, fonts, etc defined here */
-
 @layer base {
   :root {
-    /* Gaming Color Palette */
-    --background: 220 27% 8%;           /* Dark gaming background */
-    --foreground: 210 40% 98%;          /* Light text */
-    
-    --card: 220 20% 12%;                /* Dark cards */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-    
-    --popover: 220 20% 12%;
+    --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    
-    --primary: 270 91% 65%;             /* Electric purple */
-    --primary-foreground: 210 40% 98%;
-    
-    --secondary: 195 100% 65%;          /* Cyber cyan */
-    --secondary-foreground: 220 27% 8%;
-    
-    --muted: 220 20% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    --accent: 195 100% 65%;             /* Neon cyan accent */
-    --accent-foreground: 220 27% 8%;
-    
-    --destructive: 0 84% 60%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-    
-    --border: 220 20% 18%;
-    --input: 220 20% 18%;
-    --ring: 270 91% 65%;
-    
-    --radius: 0.75rem;
-    
-    /* Gaming-specific colors */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.0%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    /* Gaming color palette */
     --gaming-purple: 270 91% 65%;
-    --gaming-cyan: 195 100% 65%;
-    --gaming-gold: 45 100% 60%;
-    --gaming-green: 142 76% 45%;
-    --gaming-red: 348 83% 60%;
-    
-    /* XP and level colors */
-    --xp-bar: 142 76% 45%;
-    --level-gold: 45 100% 60%;
-    
-    /* Chat bubble colors */
-    --user-bubble: 270 91% 65%;
-    --ai-bubble: 220 20% 15%;
+    --gaming-cyan: 184 91% 65%;
+    --gaming-gold: 45 93% 65%;
+    --gaming-green: 142 91% 65%;
+    --gaming-red: 0 91% 65%;
   }
 }
 
@@ -59,116 +44,146 @@
   * {
     @apply border-border;
   }
-  
   body {
-    @apply bg-background text-foreground font-gaming;
-    background-image: 
-      radial-gradient(at 40% 20%, hsl(270 91% 65% / 0.1) 0px, transparent 50%),
-      radial-gradient(at 80% 0%, hsl(195 100% 65% / 0.1) 0px, transparent 50%),
-      radial-gradient(at 0% 50%, hsl(270 91% 65% / 0.05) 0px, transparent 50%);
+    @apply bg-background text-foreground;
+    font-family: 'Inter', 'Space Grotesk', system-ui, sans-serif;
   }
 }
 
-/* Gaming Typography */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
-/* Gaming Components */
-@layer components {
-  /* Gaming buttons */
+@layer utilities {
+  /* Gaming button styles */
   .btn-gaming {
-    @apply relative overflow-hidden rounded-xl font-semibold transition-all duration-300;
-    @apply bg-gradient-to-r from-purple-600 to-cyan-500;
-    @apply hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25;
-    @apply active:scale-95;
+    @apply bg-gradient-to-r from-gaming-purple to-gaming-cyan text-white font-semibold hover:from-gaming-purple/90 hover:to-gaming-cyan/90 transition-all duration-300 transform hover:scale-105 active:scale-95;
   }
-  
-  .btn-gaming::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-purple-400 to-cyan-300 opacity-0 transition-opacity duration-300;
+
+  /* Gaming card styles */
+  .gaming-card {
+    @apply bg-card/50 backdrop-blur-sm border border-gaming-purple/20 rounded-xl transition-all duration-300;
   }
-  
-  .btn-gaming:hover::before {
-    @apply opacity-20;
-  }
-  
-  /* XP gain animation */
-  .xp-gain {
-    @apply animate-bounce text-gaming-gold font-bold;
-    animation: xpGain 1s ease-out forwards;
-  }
-  
-  /* Glowing effects */
+
+  /* Gaming colors */
+  .text-gaming-purple { color: hsl(var(--gaming-purple)); }
+  .text-gaming-cyan { color: hsl(var(--gaming-cyan)); }
+  .text-gaming-gold { color: hsl(var(--gaming-gold)); }
+  .text-gaming-green { color: hsl(var(--gaming-green)); }
+  .text-gaming-red { color: hsl(var(--gaming-red)); }
+
+  .bg-gaming-purple { background-color: hsl(var(--gaming-purple)); }
+  .bg-gaming-cyan { background-color: hsl(var(--gaming-cyan)); }
+  .bg-gaming-gold { background-color: hsl(var(--gaming-gold)); }
+  .bg-gaming-green { background-color: hsl(var(--gaming-green)); }
+  .bg-gaming-red { background-color: hsl(var(--gaming-red)); }
+
+  /* Gaming border colors */
+  .border-gaming-purple { border-color: hsl(var(--gaming-purple)); }
+  .border-gaming-cyan { border-color: hsl(var(--gaming-cyan)); }
+  .border-gaming-gold { border-color: hsl(var(--gaming-gold)); }
+  .border-gaming-green { border-color: hsl(var(--gaming-green)); }
+  .border-gaming-red { border-color: hsl(var(--gaming-red)); }
+
+  /* Gaming glows */
   .glow-purple {
-    @apply shadow-lg shadow-purple-500/20;
-    box-shadow: 0 0 20px hsl(270 91% 65% / 0.3);
+    box-shadow: 0 0 20px hsl(var(--gaming-purple) / 0.3);
   }
   
   .glow-cyan {
-    @apply shadow-lg shadow-cyan-500/20;
-    box-shadow: 0 0 20px hsl(195 100% 65% / 0.3);
+    box-shadow: 0 0 20px hsl(var(--gaming-cyan) / 0.3);
   }
   
-  /* Gaming cards */
-  .gaming-card {
-    @apply bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl;
-    @apply hover:border-purple-500/30 transition-all duration-300;
+  .glow-gold {
+    box-shadow: 0 0 20px hsl(var(--gaming-gold) / 0.3);
   }
-  
-  /* Chat bubbles */
-  .chat-bubble-user {
-    @apply bg-gradient-to-br from-purple-600 to-purple-700 text-white rounded-2xl rounded-br-md;
-    @apply shadow-lg shadow-purple-500/20;
+
+  /* Animations */
+  .animate-pulse-gaming {
+    animation: pulse-gaming 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
-  
-  .chat-bubble-ai {
-    @apply bg-muted border border-border rounded-2xl rounded-bl-md;
-    @apply shadow-lg shadow-black/10;
+
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 0.6s ease-out;
   }
 }
 
-/* Gaming animations */
-@layer utilities {
-  @keyframes xpGain {
-    0% {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: translateY(-20px) scale(1.2);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(-40px) scale(1);
-      opacity: 0;
-    }
+@keyframes pulse-gaming {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
   }
-  
-  @keyframes levelUp {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.1);
-    }
-    100% {
-      transform: scale(1);
-    }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
   }
-  
-  @keyframes pulse-gaming {
-    0%, 100% {
-      box-shadow: 0 0 20px hsl(270 91% 65% / 0.3);
-    }
-    50% {
-      box-shadow: 0 0 30px hsl(270 91% 65% / 0.6);
-    }
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
   }
-  
-  .animate-level-up {
-    animation: levelUp 0.6s ease-out;
+  to {
+    transform: translateX(0);
   }
-  
-  .animate-pulse-gaming {
-    animation: pulse-gaming 2s infinite;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
   }
+  50% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* XP Gain Animation */
+.xp-gain {
+  animation: xp-float 2s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes xp-float {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+  20% {
+    transform: translateY(-10px) scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-50px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--gaming-purple) / 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--gaming-purple) / 0.7);
 }

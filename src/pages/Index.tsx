@@ -9,30 +9,46 @@ import { Navigation } from '@/components/Navigation';
 import { XPCounter } from '@/components/XPCounter';
 import { Avatar } from '@/components/Avatar';
 import { Leaderboard } from '@/components/Leaderboard';
+import { AuthFlow } from '@/components/AuthFlow';
+import { TeamDashboard } from '@/components/TeamDashboard';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<'landing' | 'chat' | 'dashboard' | 'leaderboard' | 'avatar'>('landing');
+  const [currentView, setCurrentView] = useState<'landing' | 'chat' | 'dashboard' | 'leaderboard' | 'avatar' | 'teams'>('landing');
   const [userXP, setUserXP] = useState(250);
   const [userLevel, setUserLevel] = useState(3);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
 
   const handleStartProject = () => {
+    if (!isAuthenticated) {
+      setShowAuth(true);
+      return;
+    }
     setCurrentView('chat');
   };
 
   const handleTaskComplete = (xpGain: number) => {
     setUserXP(prev => {
       const newXP = prev + xpGain;
-      // Level up every 100 XP
       const newLevel = Math.floor(newXP / 100) + 1;
       if (newLevel > userLevel) {
         setUserLevel(newLevel);
-        // Trigger level up animation
       }
       return newXP;
     });
   };
 
-  if (currentView !== 'landing') {
+  const handleAuthComplete = () => {
+    setIsAuthenticated(true);
+    setShowAuth(false);
+    setCurrentView('chat');
+  };
+
+  if (showAuth && !isAuthenticated) {
+    return <AuthFlow onComplete={handleAuthComplete} onBack={() => setShowAuth(false)} />;
+  }
+
+  if (currentView !== 'landing' && isAuthenticated) {
     return (
       <div className="min-h-screen bg-background">
         <Navigation currentView={currentView} onViewChange={setCurrentView} />
@@ -58,6 +74,10 @@ const Index = () => {
               
               {currentView === 'leaderboard' && (
                 <Leaderboard />
+              )}
+              
+              {currentView === 'teams' && (
+                <TeamDashboard />
               )}
             </div>
           </main>
@@ -108,7 +128,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="container mx-auto px-6 py-24">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -152,7 +171,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Stats Section */}
       <div className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 py-16">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -176,7 +194,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
       <div className="container mx-auto px-6 py-24">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
